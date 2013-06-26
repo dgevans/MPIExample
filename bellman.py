@@ -30,7 +30,7 @@ def approximateValueFunction(V,Para):
     mydomain = Para.domain[rank*m+min(rank,r):(rank+1)*m+min(rank+1,r)]#split up the domain
 
     #get the value at each point in my domaain
-    myV[0:len(mydomain)] = hstack(map(V,mydomain))
+    myV = hstack(map(V,mydomain))
     
     Vs = comm.gather(myV)
     if rank == 0:
