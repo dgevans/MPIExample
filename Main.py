@@ -9,6 +9,13 @@ from numpy import *
 from primitives import primitives_CRRA
 from Spline import Spline
 import bellman
+from mpi4py import MPI
+
+comm = MPI.COMM_WORLD
+
+rank = comm.Get_rank()
+
+print rank
 
 Para = primitives_CRRA()
 
@@ -30,5 +37,6 @@ Vf = bellman.approximateValueFunction(T(V0),Para)
 
 for t in range(0,100):  
     Vfnew = bellman.approximateValueFunction(T(Vf),Para)
-    print max(abs(Vfnew.getCoeffs()-Vf.getCoeffs()))
+    if rank == 0:
+        print max(abs(Vfnew.getCoeffs()-Vf.getCoeffs()))
     Vf = Vfnew

@@ -25,20 +25,20 @@ def approximateValueFunction(V,Para):
     rank = comm.Get_rank()
     n = len(Para.domain)
     m = n/s
+    r = n%s
     
     mydomain = Para.domain[rank*m+min(rank,r):(rank+1)*m+min(rank+1,r)]#split up the domain
-    myV = zeros(m)
-    
+
     #get the value at each point in my domaain
     myV[0:len(mydomain)] = hstack(map(V,mydomain))
     
-    Vs = w.gather(myV)
+    Vs = comm.gather(myV)
     if rank == 0:
         Vs = hstack(Vs)
         Vf = Spline(Para.domain,Vs,Para.deg)
     else:
         Vf = None
-    return w.bcast(Vf)
+    return comm.bcast(Vf)
     
     
     
